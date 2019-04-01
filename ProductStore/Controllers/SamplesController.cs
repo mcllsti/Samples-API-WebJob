@@ -43,7 +43,12 @@ namespace ProductStore.Controllers
                                                    SampleID = e.RowKey,
                                                    Title = e.Title,
                                                    Artist = e.Artist,
-                                                   SampleBlobURL = e.SampleBlobURL
+                                                   SampleMp3URL = e.SampleBlobURL,
+                                                   CreatedDate = e.CreatedDate,
+                                                   Mp3Blob = e.Mp3Blob,
+                                                   SampleDate = e.SampleDate,
+                                                   SampleMp3Blob = e.SampleMp3Blob
+                                                   
                                                };
             return productList;
         }
@@ -73,7 +78,11 @@ namespace ProductStore.Controllers
                     SampleID = productEntity.RowKey,
                     Title = productEntity.Title,
                     Artist = productEntity.Artist,
-                    SampleBlobURL = productEntity.SampleBlobURL
+                    SampleMp3URL = productEntity.SampleBlobURL,
+                    CreatedDate = productEntity.CreatedDate,
+                    Mp3Blob = productEntity.Mp3Blob,
+                    SampleDate = productEntity.SampleDate,
+                    SampleMp3Blob = productEntity.SampleMp3Blob
                 };
                 return Ok(p);
             }
@@ -94,7 +103,12 @@ namespace ProductStore.Controllers
                 PartitionKey = partitionName,
                 Title = product.Title,
                 Artist = product.Artist,
-                SampleBlobURL = product.SampleBlobURL
+                SampleBlobURL = product.SampleMp3URL,
+                CreatedDate = product.CreatedDate,
+                Mp3Blob = product.Mp3Blob,
+                SampleDate = product.SampleDate,
+                SampleMp3Blob = product.SampleMp3Blob,
+        
             };
 
             // Create the TableOperation that inserts the product entity.
@@ -132,7 +146,12 @@ namespace ProductStore.Controllers
 
             updateEntity.Title = product.Title;
             updateEntity.Artist = product.Artist;
-            updateEntity.SampleBlobURL = product.SampleBlobURL;
+            updateEntity.SampleBlobURL = product.SampleMp3URL;
+            updateEntity.SampleMp3Blob = product.SampleMp3Blob;
+            updateEntity.CreatedDate = product.CreatedDate;
+            updateEntity.Mp3Blob = product.Mp3Blob;
+            updateEntity.SampleDate = product.SampleDate;
+
 
             // Create the TableOperation that inserts the product entity.
             // Note semantics of InsertOrReplace() which are consistent with PUT
