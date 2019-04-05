@@ -3,8 +3,8 @@ using System.IO;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Blob;
 using NAudio.Wave;
-using ProductStore.Models;
 using Microsoft.WindowsAzure.Storage.Table;
+using ProductStore.Models;
 
 namespace Samples_WebJob
 {
@@ -44,7 +44,7 @@ namespace Samples_WebJob
             logger.WriteLine("Input blob is: " + sampleInQueue.Title);
 
 
-            BlobStorageService BlobStorage = new BlobStorageService();;
+            BlobStorageService BlobStorage = new BlobStorageService(); ;
             CloudBlobContainer blobContainer = BlobStorage.getCloudBlobContainer();
 
 
@@ -52,7 +52,7 @@ namespace Samples_WebJob
                 .GetBlobReference(sampleInTable.Mp3Blob);
 
 
-            string sampleName = string.Format("{0}-{1}{2}", Guid.NewGuid(), sampleInTable.Title, ".mp3");  
+            string sampleName = string.Format("{0}-{1}{2}", Guid.NewGuid(), sampleInTable.Title, ".mp3");
             sampleInTable.SampleMp3Blob = sampleName;
 
 
