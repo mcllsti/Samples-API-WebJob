@@ -12,6 +12,9 @@
     },
     {
       "filePath": "../Samples-WebJob/Samples-WebJob.csproj"
+    },
+    {
+      "filePath": "../samples-webjob/samples-webjob.csproj"
     }
   ]
 }

@@ -3,10 +3,10 @@ using System.IO;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Blob;
 using NAudio.Wave;
-using Microsoft.WindowsAzure.Storage.Table;
 using ProductStore.Models;
+using Microsoft.WindowsAzure.Storage.Table;
 
-namespace Samples_WebJob
+namespace samples_webjob
 {
     /// <summary>
     /// Daryl McAllister

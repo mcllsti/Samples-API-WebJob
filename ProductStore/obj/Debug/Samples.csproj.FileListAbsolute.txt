@@ -70,3 +70,4 @@ C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\zh-Hans\System.Spatial.
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\zh-Hant\System.Spatial.resources.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\ProductStore.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\ProductStore.pdb
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\Samples.csprojResolveAssemblyReference.cache
