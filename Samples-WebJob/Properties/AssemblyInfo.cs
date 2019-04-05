@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("samples_webjob")]
+[assembly: AssemblyTitle("Samples_WebJob")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("samples_webjob")]
+[assembly: AssemblyProduct("Samples_WebJob")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("aec52d4a-acbd-42e5-9874-82e30457524c")]
+[assembly: Guid("269fefbb-f23f-490f-9f5f-27b065e0ab91")]
 
 // Version information for an assembly consists of the following four values:
 //

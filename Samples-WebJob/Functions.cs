@@ -3,10 +3,10 @@ using System.IO;
 using Microsoft.Azure.WebJobs;
 using Microsoft.WindowsAzure.Storage.Blob;
 using NAudio.Wave;
-using ProductStore.Models;
 using Microsoft.WindowsAzure.Storage.Table;
+using SamplesTrial.Models;
 
-namespace samples_webjob
+namespace Samples_WebJob
 {
     /// <summary>
     /// Daryl McAllister
@@ -35,20 +35,29 @@ namespace samples_webjob
         /// <param name="outputBlob">CloudBlockBlob - The output sammple</param>
         /// <param name="logger">TextWriter - Logger for writeing information states to trace output </param>
         public static void GenerateSample(
-        [QueueTrigger("audiosamplemaker")] SampleEntity sampleInQueue,
+        [QueueTrigger("samplemaker")] SampleEntity sampleInQueue,
         [Table("Samples", "{PartitionKey}", "{RowKey}")] SampleEntity sampleInTable,
         [Table("Samples")] CloudTable tableBinding, TextWriter logger)
         {
             //use log.WriteLine() rather than Console.WriteLine() for trace output
             logger.WriteLine("GenerateSample() started...");
-            logger.WriteLine("Input blob is: " + sampleInQueue.Title);
+
 
 
             BlobStorageService BlobStorage = new BlobStorageService(); ;
             CloudBlobContainer blobContainer = BlobStorage.getCloudBlobContainer();
 
+            // Create a retrieve operation that takes a product entity.
+            TableOperation retrieveOperation = TableOperation.Retrieve<SampleEntity>(sampleInQueue.PartitionKey, sampleInQueue.RowKey);
 
-            var inputblob = blobContainer.GetDirectoryReference("audio/full/")
+            // Execute the operation.
+            TableResult retrievedResult = tableBinding.Execute(retrieveOperation);
+
+            // Assign the result to a ProductEntity object.
+            SampleEntity updateEntity = (SampleEntity)retrievedResult.Result;
+
+
+            var inputblob = blobContainer.GetDirectoryReference("songs/")
                 .GetBlobReference(sampleInTable.Mp3Blob);
 
 
@@ -70,6 +79,8 @@ namespace samples_webjob
 
             // Update sample date
             sampleInTable.SampleDate = DateTime.Now;
+            sampleInTable.SampleBlobURL = outputblob.Uri.ToString();
+            
 
             // Creates and executes an update operation to update the entity in the table
             TableOperation updateOperation = TableOperation.InsertOrReplace(sampleInTable);

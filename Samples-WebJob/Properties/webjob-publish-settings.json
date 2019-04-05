@@ -1,5 +1,5 @@
 ﻿{
   "$schema": "http://schemastore.org/schemas/json/webjob-publish-settings.json",
-  "webJobName": "samples-webjob",
+  "webJobName": "Samples-WebJob",
   "runMode": "Continuous"
 }
