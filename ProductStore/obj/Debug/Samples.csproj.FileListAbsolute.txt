@@ -67,3 +67,7 @@ C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\zh-Hant\System.Spatial.
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\Samples.csprojResolveAssemblyReference.cache
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\ProductStore.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\ProductStore.pdb
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NAudio.dll
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NLayer.dll
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NLayer.NAudioSupport.dll
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NAudio.xml

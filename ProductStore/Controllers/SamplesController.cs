@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -163,6 +164,48 @@ namespace ProductStore.Controllers
 
             return StatusCode(HttpStatusCode.NoContent);
         }
+
+
+
+        [ResponseType(typeof(void))]
+        public IHttpActionResult PutSample(string id, HttpPostedFileBase fileupload)
+        {
+            if (id != product.SampleID)
+            {
+                return BadRequest();
+            }
+
+            // Create a retrieve operation that takes a product entity.
+            TableOperation retrieveOperation = TableOperation.Retrieve<SampleEntity>(partitionName, id);
+
+            // Execute the operation.
+            TableResult retrievedResult = table.Execute(retrieveOperation);
+
+            // Assign the result to a ProductEntity object.
+            SampleEntity updateEntity = (SampleEntity)retrievedResult.Result;
+
+            updateEntity.Title = product.Title;
+            updateEntity.Artist = product.Artist;
+            updateEntity.SampleBlobURL = product.SampleMp3URL;
+            updateEntity.SampleMp3Blob = product.SampleMp3Blob;
+            updateEntity.CreatedDate = product.CreatedDate;
+            updateEntity.Mp3Blob = product.Mp3Blob;
+            updateEntity.SampleDate = product.SampleDate;
+
+
+            // Create the TableOperation that inserts the product entity.
+            // Note semantics of InsertOrReplace() which are consistent with PUT
+            // See: https://stackoverflow.com/questions/14685907/difference-between-insert-or-merge-entity-and-insert-or-replace-entity
+            var updateOperation = TableOperation.InsertOrReplace(updateEntity);
+
+            // Execute the insert operation.
+            table.Execute(updateOperation);
+
+            return StatusCode(HttpStatusCode.NoContent);
+        }
+
+
+
 
         // DELETE: api/Products/5
         /// <summary>
