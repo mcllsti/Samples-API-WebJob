@@ -24,7 +24,10 @@ C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Microsoft.ApplicationIn
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Microsoft.Web.Infrastructure.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Microsoft.WindowsAzure.Storage.dll
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NAudio.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Newtonsoft.Json.dll
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NLayer.dll
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NLayer.NAudioSupport.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\System.Net.Http.Formatting.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\System.Spatial.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\System.Web.Helpers.dll
@@ -44,6 +47,7 @@ C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Microsoft.AI.Web.xml
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Microsoft.AI.WindowsServer.xml
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Microsoft.ApplicationInsights.xml
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NAudio.xml
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\System.Spatial.xml
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\System.Web.Razor.xml
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\System.Web.Webpages.xml
@@ -64,10 +68,5 @@ C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\ko\System.Spatial.resou
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\ru\System.Spatial.resources.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\zh-Hans\System.Spatial.resources.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\zh-Hant\System.Spatial.resources.dll
-C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\Samples.csprojResolveAssemblyReference.cache
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\ProductStore.dll
 C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\obj\Debug\ProductStore.pdb
-C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NAudio.dll
-C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NLayer.dll
-C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NLayer.NAudioSupport.dll
-C:\Users\Daryl\Desktop\CPD\ProductStore\ProductStore\bin\NAudio.xml

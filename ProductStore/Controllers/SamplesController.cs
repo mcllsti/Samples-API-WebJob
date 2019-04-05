@@ -1,14 +1,21 @@
 ﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.WindowsAzure.Storage.Queue;
 using Microsoft.WindowsAzure.Storage.Table;
+using Newtonsoft.Json;
 using ProductStore.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http.Formatting;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Web.UI.WebControls;
 
 namespace ProductStore.Controllers
 {
@@ -167,13 +174,65 @@ namespace ProductStore.Controllers
 
 
 
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutSample(string id, HttpPostedFileBase fileupload)
+        //EXPERIMENTAL!!! -0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0
+
+        // accessor variables and methods for blob containers and queues
+        private BlobStorageService _blobStorageService = new BlobStorageService();
+        private CloudQueueService _queueStorageService = new CloudQueueService();
+
+        /// <summary>
+        /// Gets the library containger for songs and samples
+        /// </summary>
+        /// <returns>CloudBlopContainer - The library container</returns>
+        private CloudBlobContainer getLibraryContainer()
         {
-            if (id != product.SampleID)
+            return _blobStorageService.getCloudBlobContainer();
+        }
+
+        /// <summary>
+        /// Gets the samplemaker queue
+        /// </summary>
+        /// <returns>CloudQueue - sample maker queue</returns>
+        private CloudQueue getSampleMakerQueue()
+        {
+            return _queueStorageService.getCloudQueue();
+        }
+
+        /// <summary>
+        /// Gets the MimeType of the specififed file
+        /// </summary>
+        /// <param name="Filename">String - File name of submited file</param>
+        /// <returns>String - Content Type</returns>
+        private string GetMimeType(string Filename)
+        {
+            try
             {
-                return BadRequest();
+                string ext = Path.GetExtension(Filename).ToLowerInvariant();
+                Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext);
+                if (key != null)
+                {
+                    string contentType = key.GetValue("Content Type") as String;
+                    if (!String.IsNullOrEmpty(contentType))
+                    {
+                        return contentType;
+                    }
+                }
             }
+            catch
+            {
+            }
+            return "application/octet-stream";
+        }
+
+
+
+        [ResponseType(typeof(void))]
+        [HttpPut]
+        [Route("api/samples/{id}/put")]
+        public async Task<IHttpActionResult> PutSample(string id)
+        {
+
+            Stream requestStream = await Request.Content.ReadAsStreamAsync();
 
             // Create a retrieve operation that takes a product entity.
             TableOperation retrieveOperation = TableOperation.Retrieve<SampleEntity>(partitionName, id);
@@ -184,14 +243,21 @@ namespace ProductStore.Controllers
             // Assign the result to a ProductEntity object.
             SampleEntity updateEntity = (SampleEntity)retrievedResult.Result;
 
-            updateEntity.Title = product.Title;
-            updateEntity.Artist = product.Artist;
-            updateEntity.SampleBlobURL = product.SampleMp3URL;
-            updateEntity.SampleMp3Blob = product.SampleMp3Blob;
-            updateEntity.CreatedDate = product.CreatedDate;
-            updateEntity.Mp3Blob = product.Mp3Blob;
-            updateEntity.SampleDate = product.SampleDate;
 
+            // Add more information to it so as to make it unique
+            // within all the files in that blob container
+            var name = string.Format("{0}{1}", id, ".mp3");
+
+
+            String path = "songs/" + name;
+            var blob = getLibraryContainer().GetBlockBlobReference(path);
+
+            blob.Properties.ContentType = Request.Content.Headers.ContentType.ToString();
+
+            blob.UploadFromStream(requestStream);
+
+            var queueMessageSample = new SampleEntity(partitionName, id);
+            getSampleMakerQueue().AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(queueMessageSample)));
 
             // Create the TableOperation that inserts the product entity.
             // Note semantics of InsertOrReplace() which are consistent with PUT
@@ -204,7 +270,7 @@ namespace ProductStore.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-
+        //-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0
 
 
         // DELETE: api/Products/5
