@@ -3,7 +3,9 @@ using System;
 
 namespace SamplesTrial.Models
 {
-
+    /// <summary>
+    /// SampleEntity class acts as the DTO for API when dealing with samples and serlization
+    /// </summary>
     public class SampleEntity : TableEntity
     {
         public string Title { get; set; }

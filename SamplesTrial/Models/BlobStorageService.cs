@@ -8,6 +8,9 @@ using System.Web;
 
 namespace SamplesTrial.Models
 {
+    /// <summary>
+    /// \Blob dealing class provided
+    /// </summary>
     public class BlobStorageService
     {
         public CloudBlobContainer getCloudBlobContainer()

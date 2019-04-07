@@ -22,11 +22,15 @@ namespace SamplesTrial.Controllers
     public class SamplesController : ApiController
     {
         private const String partitionName = "Samples_Partition_1";
-
+        //setup
         private CloudStorageAccount storageAccount;
         private CloudTableClient tableClient;
         private CloudTable table;
 
+        /// <summary>
+        /// Constructor for samples controller
+        /// setup
+        /// </summary>
         public SamplesController()
         {
             storageAccount = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["AzureWebJobsStorage"].ToString());
@@ -35,17 +39,17 @@ namespace SamplesTrial.Controllers
         }
 
         /// <summary>
-        /// Get all products
+        /// Get all samples
         /// </summary>
-        /// <returns></returns>
-        // GET: api/Products
+        /// <returns>HTTP Response</returns>
+        // GET: api/samples
         public IEnumerable<Sample> Get()
         {
             TableQuery<SampleEntity> query = new TableQuery<SampleEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionName));
             List<SampleEntity> entityList = new List<SampleEntity>(table.ExecuteQuery(query));
 
-            // Basically create a list of Product from the list of ProductEntity with a 1:1 object relationship, filtering data as needed
-            IEnumerable<Sample> productList = from e in entityList
+            // Basically create a list of samples from the list of SampleEntity with a 1:1 object relationship, filtering data as needed
+            IEnumerable<Sample> sampleList = from e in entityList
                                               select new Sample()
                                               {
                                                   SampleID = e.RowKey,
@@ -58,19 +62,19 @@ namespace SamplesTrial.Controllers
                                                   SampleMp3Blob = e.SampleMp3Blob
 
                                               };
-            return productList;
+            return sampleList;
         }
 
-        // GET: api/Products/5
+        // GET: api/samples/5
         /// <summary>
-        /// Get a product
+        /// Get a samples
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">sample to get</param>
+        /// <returns>HTTP Response</returns>
         [ResponseType(typeof(Sample))]
         public IHttpActionResult GetSample(string id)
         {
-            // Create a retrieve operation that takes a product entity.
+            // Create a retrieve operation that takes a sample entity.
             TableOperation getOperation = TableOperation.Retrieve<SampleEntity>(partitionName, id);
 
             // Execute the retrieve operation.
@@ -80,88 +84,79 @@ namespace SamplesTrial.Controllers
             if (getOperationResult.Result == null) return NotFound();
             else
             {
-                SampleEntity productEntity = (SampleEntity)getOperationResult.Result;
+                SampleEntity sampleEntity = (SampleEntity)getOperationResult.Result;
                 Sample p = new Sample()
                 {
-                    SampleID = productEntity.RowKey,
-                    Title = productEntity.Title,
-                    Artist = productEntity.Artist,
-                    SampleMp3URL = productEntity.SampleBlobURL,
-                    CreatedDate = productEntity.CreatedDate,
-                    Mp3Blob = productEntity.Mp3Blob,
-                    SampleDate = productEntity.SampleDate,
-                    SampleMp3Blob = productEntity.SampleMp3Blob
+                    SampleID = sampleEntity.RowKey,
+                    Title = sampleEntity.Title,
+                    Artist = sampleEntity.Artist,
+                    SampleMp3URL = sampleEntity.SampleBlobURL,
+                    CreatedDate = sampleEntity.CreatedDate,
+                    Mp3Blob = sampleEntity.Mp3Blob,
+                    SampleDate = sampleEntity.SampleDate,
+                    SampleMp3Blob = sampleEntity.SampleMp3Blob
                 };
                 return Ok(p);
             }
         }
 
-        // POST: api/Products
+        // POST: api/samples
         /// <summary>
-        /// Create a new product
+        /// Create a new samples
         /// </summary>
-        /// <param name="product"></param>
-        /// <returns></returns>
+        /// <param name="sample">Sample to create</param>
+        /// <returns>HTTP Response</returns>
         [ResponseType(typeof(Sample))]
-        public IHttpActionResult PostSample(Sample product)
+        public IHttpActionResult PostSample(Sample sample)
         {
-            SampleEntity productEntity = new SampleEntity()
+            SampleEntity sampleEntity = new SampleEntity()
             {
                 RowKey = getNewMaxRowKeyValue(),
                 PartitionKey = partitionName,
-                Title = product.Title,
-                Artist = product.Artist,
-                SampleBlobURL = product.SampleMp3URL,
-                CreatedDate = product.CreatedDate,
-                Mp3Blob = product.Mp3Blob,
-                SampleDate = product.SampleDate,
-                SampleMp3Blob = product.SampleMp3Blob,
-
+                Title = sample.Title,
+                Artist = sample.Artist,
+                CreatedDate = DateTime.Now,
             };
 
-            // Create the TableOperation that inserts the product entity.
-            var insertOperation = TableOperation.Insert(productEntity);
+            // Create the TableOperation that inserts the sample entity.
+            var insertOperation = TableOperation.Insert(sampleEntity);
 
             // Execute the insert operation.
             table.Execute(insertOperation);
 
-            return CreatedAtRoute("DefaultApi", new { id = productEntity.RowKey }, productEntity);
+            return CreatedAtRoute("DefaultApi", new { id = sampleEntity.RowKey }, sampleEntity);
         }
 
-        // PUT: api/Products/5
+        // PUT: api/samples/5
         /// <summary>
-        /// Update a product
+        /// Update a samples
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="product"></param>
-        /// <returns></returns>
+        /// <param name="id">id to be updated</param>
+        /// <param name="sample">new data to update</param>
+        /// <returns>HTTP Response</returns>
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutSample(string id, Sample product)
+        public IHttpActionResult PutSample(string id, Sample sample)
         {
-            if (id != product.SampleID)
+            if (id != sample.SampleID)
             {
                 return BadRequest();
             }
 
-            // Create a retrieve operation that takes a product entity.
+            // Create a retrieve operation that takes a samples entity.
             TableOperation retrieveOperation = TableOperation.Retrieve<SampleEntity>(partitionName, id);
 
             // Execute the operation.
             TableResult retrievedResult = table.Execute(retrieveOperation);
 
-            // Assign the result to a ProductEntity object.
+            // Assign the result to a SampleEntity object.
             SampleEntity updateEntity = (SampleEntity)retrievedResult.Result;
 
-            updateEntity.Title = product.Title;
-            updateEntity.Artist = product.Artist;
-            updateEntity.SampleBlobURL = product.SampleMp3URL;
-            updateEntity.SampleMp3Blob = product.SampleMp3Blob;
-            updateEntity.CreatedDate = product.CreatedDate;
-            updateEntity.Mp3Blob = product.Mp3Blob;
-            updateEntity.SampleDate = product.SampleDate;
+
+            updateEntity.Title = sample.Title;
+            updateEntity.Artist = sample.Artist;
 
 
-            // Create the TableOperation that inserts the product entity.
+            // Create the TableOperation that inserts the sample entity.
             // Note semantics of InsertOrReplace() which are consistent with PUT
             // See: https://stackoverflow.com/questions/14685907/difference-between-insert-or-merge-entity-and-insert-or-replace-entity
             var updateOperation = TableOperation.InsertOrReplace(updateEntity);
@@ -224,17 +219,28 @@ namespace SamplesTrial.Controllers
             return "application/octet-stream";
         }
 
-
-
+        // PUT: api/samples/5/put
+        /// <summary>
+        /// Updates a existing table entry with a song.
+        /// Sample will also be created and added to table entry via webjob
+        /// </summary>
+        /// <param name="id">ID of entry to be updated</param>
+        /// <returns>HTTP Responce</returns>
         [ResponseType(typeof(void))]
         [HttpPut]
-        [Route("api/samples/{id}/put")]
-        public async Task<IHttpActionResult> PutSample(string id)
+        [Route("api/samples/{id}/blob")]
+        public async Task<IHttpActionResult> PutBlob(string id)
         {
 
+            //getting our content which is the song to have sample created
+            //must be done async so we await it to stop errors
             Stream requestStream = await Request.Content.ReadAsStreamAsync();
 
-            // Create a retrieve operation that takes a product entity.
+            if (requestStream.Length < 1) {
+                return  StatusCode(HttpStatusCode.UnsupportedMediaType);
+            }
+
+            // Create a retrieve operation that takes a sample entity.
             TableOperation retrieveOperation = TableOperation.Retrieve<SampleEntity>(partitionName, id);
 
             // Execute the operation.
@@ -242,53 +248,99 @@ namespace SamplesTrial.Controllers
 
             // Assign the result to a ProductEntity object.
             SampleEntity updateEntity = (SampleEntity)retrievedResult.Result;
+            if (updateEntity == null) {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
 
+            //Delete any blobs in it that exists
+            //reset our values
+            DeleteOldBlobs(updateEntity);
+            updateEntity.Mp3Blob = "";
+            updateEntity.SampleBlobURL = "";
+            updateEntity.SampleMp3Blob = "";
 
+            //Set the name of the song to be the id of the table entity
+            string name = string.Format("{0}{1}", id, ".mp3");
 
-
-            // Add more information to it so as to make it unique
-            // within all the files in that blob container
-            var name = string.Format("{0}{1}", id, ".mp3");
-
-
-            String path = "songs/" + name;
+            //set our full path so its easier
+            string path = "songs/" + name;
             var blob = getLibraryContainer().GetBlockBlobReference(path);
 
+            //setting our content type header as audo/mpeg
             blob.Properties.ContentType = Request.Content.Headers.ContentType.ToString();
-
+            //upload song
             blob.UploadFromStream(requestStream);
 
-
+            //Add to our queue to trigger the webjob
             CloudQueue sampleQueue = getSampleMakerQueue();
             var queueMessageSample = new SampleEntity(partitionName, id);
             sampleQueue.AddMessage(new CloudQueueMessage(JsonConvert.SerializeObject(queueMessageSample)));
 
+            //Update our sample records with the new mp3 blob name
             updateEntity.Mp3Blob = name;
 
-            // Create the TableOperation that inserts the product entity.
-            // Note semantics of InsertOrReplace() which are consistent with PUT
-            // See: https://stackoverflow.com/questions/14685907/difference-between-insert-or-merge-entity-and-insert-or-replace-entity
+            // Create the TableOperation that inserts the sample entity.
             var updateOperation = TableOperation.InsertOrReplace(updateEntity);
 
             // Execute the insert operation.
             table.Execute(updateOperation);
 
-            return StatusCode(HttpStatusCode.NoContent);
+            return StatusCode(HttpStatusCode.Created);
+        }
+
+        /// <summary>
+        /// Deletes a sample blob that is assosiated with a sample
+        /// </summary>
+        /// <param name="id">Id of the sample to have the blob deleted</param>
+        /// <returns>HTTP Response</returns>
+        [ResponseType(typeof(void))]
+        [HttpDelete]
+        [Route("api/samples/{id}/blob")]
+        public IHttpActionResult DeleteBlob(string id)
+        {
+
+            // Create a retrieve operation that takes a sample entity.
+            TableOperation retrieveOperation = TableOperation.Retrieve<SampleEntity>(partitionName, id);
+
+            // Execute the operation.
+            TableResult retrievedResult = table.Execute(retrieveOperation);
+
+            // Assign the result to a ProductEntity object.
+            SampleEntity updateEntity = (SampleEntity)retrievedResult.Result;
+            if (updateEntity == null)
+            {
+                return StatusCode(HttpStatusCode.NotFound);
+            }
+
+            //Delete any blobs in it that exists
+            //reset our values
+            DeleteOldBlobs(updateEntity);
+            updateEntity.Mp3Blob = "";
+            updateEntity.SampleBlobURL = "";
+            updateEntity.SampleMp3Blob = "";
+
+            // Create the TableOperation that inserts the sample entity.
+            var updateOperation = TableOperation.InsertOrReplace(updateEntity);
+
+            // Execute the insert operation.
+            table.Execute(updateOperation);
+
+            return StatusCode(HttpStatusCode.Created);
         }
 
         //-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0-0
 
 
-        // DELETE: api/Products/5
+        // DELETE: api/samples/5
         /// <summary>
-        /// Delete a product
+        /// Delete a samples
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Sample to be deleted</param>
+        /// <returns>HTTP Response</returns>
         [ResponseType(typeof(Sample))]
         public IHttpActionResult DeleteSample(string id)
         {
-            // Create a retrieve operation that takes a product entity.
+            // Create a retrieve operation that takes a samples entity.
             TableOperation retrieveOperation = TableOperation.Retrieve<SampleEntity>(partitionName, id);
 
             // Execute the retrieve operation.
@@ -300,10 +352,36 @@ namespace SamplesTrial.Controllers
                 TableOperation deleteOperation = TableOperation.Delete(deleteEntity);
 
                 // Execute the operation.
+                DeleteOldBlobs(deleteEntity); //delete blobs assosiated with sample
                 table.Execute(deleteOperation);
 
                 return Ok(retrievedResult.Result);
             }
+        }
+
+        /// <summary>
+        /// Deleted blobs from a samples entity
+        /// </summary>
+        /// <param name="toDelete">SampleEntity - to have the blob deleted from</param>
+        public void DeleteOldBlobs(SampleEntity toDelete) {
+            
+            //set our paths
+            string Songpath = "songs/" + toDelete.Mp3Blob;
+            string Samplepath = "audio/samples/" + toDelete.SampleMp3Blob;
+
+            //if there is a mp3blob - delete it
+            if (toDelete.Mp3Blob != "") {
+                var mp3Blob = getLibraryContainer().GetBlobReference(Songpath);
+                mp3Blob.DeleteIfExists();
+            }
+
+            //if there is a sample mp3 blob - delete it
+            if (toDelete.SampleMp3Blob != "") {
+                var sampleblob = getLibraryContainer().GetBlobReference(Samplepath);
+                sampleblob.DeleteIfExists();
+            }
+
+
         }
 
         private String getNewMaxRowKeyValue()

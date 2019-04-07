@@ -166,7 +166,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\InitialiseProducts.cs" />
+    <Compile Include="Migrations\InitialiseSamples.cs" />
     <Compile Include="Models\BlobStorageService.cs" />
     <Compile Include="Models\CloudQueueService.cs" />
     <Compile Include="Models\Sample.cs" />

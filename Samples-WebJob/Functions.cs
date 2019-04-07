@@ -11,12 +11,7 @@ namespace Samples_WebJob
     /// <summary>
     /// Daryl McAllister
     /// S1222204
-    /// Cloud Platform Development Coursework
-    /// 
-    /// References: 
-    /// Lab 2, Cloud Platform Development, Glasgow Caledonian University, 2019
-    /// Class1.cs sample code, Cloud Platform Development, Glasgow Caledonian University, 2019
-    /// CPD diet 1 CWK part A resources, Cloud Platform Development, Glasgow Caledonian University, 2019
+    /// Cloud Platform Development Coursework B
     /// </summary>
     public class Functions
     {
@@ -30,9 +25,9 @@ namespace Samples_WebJob
         /// "{queueTrigger}" is an inbuilt variable taking on value of contents of message automatically;
         /// the other variables are valued automatically.
         /// </summary>
-        /// <param name="blobInfo">String - inbuilt variable taking on value of contents of message automatically</param>
-        /// <param name="inputBlob">CloudBlockBlob - The input song that will have a sample generated</param>
-        /// <param name="outputBlob">CloudBlockBlob - The output sammple</param>
+        /// <param name="tableBinding">CloudTable - the table which samples are contained in</param>
+        /// <param name="sampleInQueue">SampleEntity - The sample entity related to the sample in queue</param>
+        /// <param name="sampleInTable">SampleEntity - the sample enetyt realting to sample in table</param>
         /// <param name="logger">TextWriter - Logger for writeing information states to trace output </param>
         public static void GenerateSample(
         [QueueTrigger("samplemaker")] SampleEntity sampleInQueue,
@@ -42,8 +37,7 @@ namespace Samples_WebJob
             //use log.WriteLine() rather than Console.WriteLine() for trace output
             logger.WriteLine("GenerateSample() started...");
 
-
-
+            //setup
             BlobStorageService BlobStorage = new BlobStorageService(); ;
             CloudBlobContainer blobContainer = BlobStorage.getCloudBlobContainer();
 
@@ -53,40 +47,47 @@ namespace Samples_WebJob
             // Execute the operation.
             TableResult retrievedResult = tableBinding.Execute(retrieveOperation);
 
-            // Assign the result to a ProductEntity object.
+            // Assign the result to a sampleEntity object.
             SampleEntity updateEntity = (SampleEntity)retrievedResult.Result;
 
+            //Stops unessisary crashing on invalid input or table references
+            try {
+                //our full song blob
+                var inputblob = blobContainer.GetDirectoryReference("songs/").GetBlobReference(sampleInTable.Mp3Blob);
 
-            var inputblob = blobContainer.GetDirectoryReference("songs/")
-                .GetBlobReference(sampleInTable.Mp3Blob);
+                //creating our sample name. GUID is used for this process
+                string sampleName = string.Format("{0}{1}", Guid.NewGuid(), ".mp3");
+                sampleInTable.SampleMp3Blob = sampleName;
+
+                //our 20s sample blob 
+                var outputblob = blobContainer.GetBlockBlobReference("audio/samples/" + sampleName);
 
 
-            string sampleName = string.Format("{0}-{1}{2}", Guid.NewGuid(), sampleInTable.Title, ".mp3");
-            sampleInTable.SampleMp3Blob = sampleName;
+                // open streams to blobs for reading and writing as appropriate.
+                // pass references to application specific methods
+                using (Stream input = inputblob.OpenRead())
+                using (Stream output = outputblob.OpenWrite())
+                {
+                    CreateSample(input, output, 20);
+                    outputblob.Properties.ContentType = "audio/mpeg3";
+                }
+
+                //set dates and url info
+                sampleInTable.SampleDate = DateTime.Now;
+                sampleInTable.SampleBlobURL = outputblob.Uri.ToString();
 
 
-            var outputblob = blobContainer.GetBlockBlobReference("audio/samples/" + sampleName);
+                // Creates and executes an update operation to update the entity in the table
+                TableOperation updateOperation = TableOperation.InsertOrReplace(sampleInTable);
+                tableBinding.Execute(updateOperation);
 
-
-            // open streams to blobs for reading and writing as appropriate.
-            // pass references to application specific methods
-            using (Stream input = inputblob.OpenRead())
-            using (Stream output = outputblob.OpenWrite())
-            {
-                CreateSample(input, output, 20);
-                outputblob.Properties.ContentType = "audio/mpeg3";
+                logger.WriteLine("GenerageSample() completed...");
+            }
+            catch (Exception e) {
+                //error logging
+                logger.WriteLine("GenerageSample() failed with reason: " + e.ToString());
             }
 
-            // Update sample date
-            sampleInTable.SampleDate = DateTime.Now;
-            sampleInTable.SampleBlobURL = outputblob.Uri.ToString();
-            
-
-            // Creates and executes an update operation to update the entity in the table
-            TableOperation updateOperation = TableOperation.InsertOrReplace(sampleInTable);
-            tableBinding.Execute(updateOperation);
-
-            logger.WriteLine("GenerageSample() completed...");
         }
 
         /// <summary>

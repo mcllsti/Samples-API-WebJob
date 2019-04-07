@@ -8,6 +8,9 @@ using System.Linq;
 using System.Web;
 namespace SamplesTrial.Models
 {
+    /// <summary>
+    /// Queue dealing class provided
+    /// </summary>
     public class CloudQueueService
     {
         public CloudQueue getCloudQueue()
