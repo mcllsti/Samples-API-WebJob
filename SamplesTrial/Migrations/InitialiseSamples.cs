@@ -49,18 +49,18 @@ namespace SamplesTrial.Migrations
                 sample2.SampleBlobURL = "";
                 sample2.Artist = "Youtube";
                 sample2.CreatedDate = DateTime.Now;
-                sample1.Mp3Blob = "";
-                sample1.SampleDate = DateTime.Now;
-                sample1.SampleMp3Blob = "";
+                sample2.Mp3Blob = "";
+                sample2.SampleDate = DateTime.Now;
+                sample2.SampleMp3Blob = "";
 
                 SampleEntity sample3 = new SampleEntity(partitionName, "3");
                 sample3.Title = "American Idiot";
                 sample3.SampleBlobURL = "";
                 sample3.Artist = "Green Day";
                 sample3.CreatedDate = DateTime.Now;
-                sample1.Mp3Blob = "";
-                sample1.SampleDate = DateTime.Now;
-                sample1.SampleMp3Blob = "";
+                sample3.Mp3Blob = "";
+                sample3.SampleDate = DateTime.Now;
+                sample3.SampleMp3Blob = "";
 
                 // Create a product entity and add it to the table.
                 SampleEntity sample4 = new SampleEntity(partitionName, "4");

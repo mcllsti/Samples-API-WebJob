@@ -116,6 +116,11 @@ namespace SamplesTrial.Controllers
                 Title = sample.Title,
                 Artist = sample.Artist,
                 CreatedDate = DateTime.Now,
+                Mp3Blob = "",
+                SampleBlobURL = "",
+                SampleDate = DateTime.Now,
+                SampleMp3Blob = ""
+  
             };
 
             // Create the TableOperation that inserts the sample entity.

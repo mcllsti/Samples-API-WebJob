@@ -38,7 +38,7 @@ namespace Samples_WebJob
             logger.WriteLine("GenerateSample() started...");
 
             //setup
-            BlobStorageService BlobStorage = new BlobStorageService(); ;
+            BlobStorageService BlobStorage = new BlobStorageService(); 
             CloudBlobContainer blobContainer = BlobStorage.getCloudBlobContainer();
 
             // Create a retrieve operation that takes a product entity.
